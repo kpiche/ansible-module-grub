@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+# (c) 2020, K. Piche <kpiche@gmail.com>
 # (c) 2014, William Leemans <willie@elaba.net>
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-import datetime
-import os
-import re
-import subprocess
-import shutil
-import datetime
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
 
-DOCUMENTATION = """
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ['preview'],
+                    'supported_by': 'community'}
+
+DOCUMENTATION = r'''
 ---
 module: grub
 author: William Leemans <willie@elaba.net>
@@ -63,10 +65,9 @@ options:
     choices: [ yes, no ]
     description:
       - Whether an option can be defined multiple times
-    
-"""
+'''
 
-EXAMPLES = r"""
+EXAMPLES = r'''
 # Add/Change root=/dev/sda1 to the kernel line(s)
 - grub: koption=root kvalue=/dev/sda1
 
@@ -78,8 +79,16 @@ EXAMPLES = r"""
 
 # Change the grub wait timeout to 15
 - grub: timeout=15
+'''
 
-"""
+import datetime
+import os
+import re
+import subprocess
+import shutil
+
+from ansible.module_utils.basic import AnsibleModule
+
 
 class Grub(object):
 
@@ -355,6 +364,7 @@ def main():
 
     module.exit_json(changed=grub.haschanged(), msg=msg, **result)
 
-# import module snippets
-from ansible.module_utils.basic import *
-main()
+
+if __name__ == '__main__':
+    main()
+
