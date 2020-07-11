@@ -102,8 +102,6 @@ class Grub(object):
 
         self._get_grub_version()
 
-        self.grub_bin_version = 0.99
-
         if self.config_file is None and self.grub_bin_version >= 1:
             self.config_file = "/etc/default/grub"
         elif self.config_file is None and self.grub_bin_version > 0.9 and self.grub_bin_version < 1:
@@ -226,7 +224,7 @@ class Grub(object):
         if err != 0:
             return ( True, "" )
         else:
-            return ( False, "Couln't make new config" )
+            return ( False, "Could not make new config" )
 
     def _grub2_set_default(self):
         newfile = ""
@@ -284,15 +282,17 @@ class Grub(object):
         elif self.grub_bin_version > 0.9 and self.grub_bin_version < 1:
             self._grub_set_timeout()
         
-    def save_config(self, contents):
+    def save_config(self):
         try: 
             with open(self.config_file, "w") as f:
-                f.write(contents)
+                f.write(self.config_new)
         except:
-            return ( False, "Couldn't save config" )
+            return ( False, "Could not save config" )
 
         if self.grub_bin_version >= 1:
             return self._grub2_refresh_menu()
+
+        return ( True, "" )
     
     def backup_config(self):
         try:
