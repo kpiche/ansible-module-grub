@@ -84,7 +84,6 @@ EXAMPLES = r'''
 import datetime
 import os
 import re
-import subprocess
 import shutil
 
 from ansible.module_utils.basic import AnsibleModule
@@ -136,8 +135,7 @@ class Grub(object):
                 if os.path.isfile(binpath) and os.access(binpath, os.X_OK):
                     self.grub_bin_mkconfig = binpath
         if self.grub_bin_install is not None:
-            proc = subprocess.Popen([self.grub_bin_install,"--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = proc.communicate()
+            err, out, stderr = self.module.run_command([self.grub_bin_install,"--version"])
             self.grub_bin_version = float(re.search('[0-9]+\.[0-9]+',out).group(0))
 
     def _kernel_options_tolist(self, options):
@@ -228,8 +226,7 @@ class Grub(object):
         self.config_new = newfile
 
     def _grub2_refresh_menu(self):
-        p = subprocess.Popen([self.grub_bin_mkconfig, "-o", "/boot/grub2/grub.cfg"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
+        err, out, stderr = self.module.run_command([self.grub_bin_mkconfig, "-o", "/boot/grub2/grub.cfg"])
         if err != 0:
             return ( True, "" )
         else:
